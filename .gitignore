@@ -1,0 +1,13 @@
+.idea/
+venv/
+
+__pycache__/
+static/
+
+*~
+*.pyc
+.env
+.env.local
+.env.dev
+.env.stage
+.coverage
