@@ -126,7 +126,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = env.str("STATIC_URL")
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = env.str("MEDIA_URL")
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static dev")
+)
 
 # for `python manage.py createsuperuser`
 ADMIN_USERNAME = env.str("ADMIN_USERNAME", default=None)
