@@ -24,6 +24,6 @@ urlpatterns = [
     path('api/v1/', include('src.api.urls')),  # add url for our application
 ]
 
-if settings.DEBUG:
+if settings.DEBUG:  # когда сервер локально, а не на проде запускается, то и файлы статики и медиа берем локально
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -25,9 +25,12 @@ from src.api.models import Category, RubiksCube, Cart, CartProduct
 class RubiksCubeListSerializer(serializers.ModelSerializer):
     """List of Rubik's Cubes"""
 
+    rating_user = serializers.BooleanField()
+    middle_star = serializers.IntegerField()
+
     class Meta:
         model = RubiksCube
-        fields = ("title", "price", "category")
+        fields = ("id", "title", "price", "category", "rating_user", "middle_star")
 
 
 class RubiksCubeDetailSerializer(serializers.ModelSerializer):

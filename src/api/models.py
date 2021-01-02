@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 User = get_user_model()
 
@@ -19,6 +19,33 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
 
+class RatingStar(models.Model):
+    value = models.SmallIntegerField("Value", default=0)
+
+    def __str__(self):
+        return f'{self.value}'
+
+    class Meta:
+        verbose_name = "Звезда рейтинг"
+        verbose_name_plural = "Звёзды рейтинга"
+        ordering = ["-value"]
+
+
+class Rating(models.Model):
+    ip = models.CharField("IP-address", max_length=15)
+    star = models.ForeignKey(RatingStar, on_delete=models.CASCADE, verbose_name="Звезда")
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, verbose_name="Категория")
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')  # add ForeignKey to multiple models
+
+    def __str__(self):
+        return f"{self.star} - {self.content_object}"
+
+    class Meta:
+        verbose_name = "Рейтинг"
+        verbose_name_plural = "Рейтинг"
+
+
 class Product(models.Model):
     category = models.ForeignKey("Category", on_delete=models.CASCADE, verbose_name='Категория')
     title = models.CharField(max_length=100, default='Кубик Рубика', verbose_name='Название')
@@ -27,6 +54,7 @@ class Product(models.Model):
     description = models.TextField(verbose_name='Описание')
     price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Цена')
     manufacturer = models.CharField(max_length=100, verbose_name='Производитель')
+    rating = GenericRelation(Rating)
 
     class Meta:
         abstract = True
