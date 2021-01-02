@@ -30,6 +30,18 @@ class RubiksCubeListSerializer(serializers.ModelSerializer):
         fields = ("title", "price", "category")
 
 
+class RubiksCubeDetailSerializer(serializers.ModelSerializer):
+    """Full info for product"""
+
+    category = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    # reviews = ReviewSerializer(many=True)
+
+    class Meta:
+        model = RubiksCube
+        fields = "__all__"
+
+
+
 
 # class ReviewCreateSerializer(serializers.ModelSerializer):
 #     """Добавление отзыва"""
@@ -50,14 +62,5 @@ class RubiksCubeListSerializer(serializers.ModelSerializer):
 #         fields = ("name", "text", "children")
 
 
-class RubiksCubeDetailSerializer(serializers.ModelSerializer):
-    """Full info for product"""
-
-    # category = serializers.SlugRelatedField(slug_field="name", read_only=True)
-    # reviews = ReviewSerializer(many=True)
-
-    class Meta:
-        model = RubiksCube
-        fields = "__all__"
 
 

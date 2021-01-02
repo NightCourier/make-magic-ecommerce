@@ -40,7 +40,7 @@ class RubiksCube(Product):
     packaging = models.CharField(max_length=255, verbose_name='Упаковка')
 
     def __str__(self):
-        return f'{self.category.name}'
+        return self.title
 
     class Meta:
         verbose_name = 'Кубик Рубика'

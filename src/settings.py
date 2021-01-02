@@ -133,7 +133,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = env.str("MEDIA_URL")
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static dev")
+    os.path.join(BASE_DIR, "static dev"),
 )
 
 # for `python manage.py createsuperuser`
