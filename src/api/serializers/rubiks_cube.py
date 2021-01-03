@@ -27,6 +27,7 @@ class RubiksCubeListSerializer(serializers.ModelSerializer):
 
     rating_user = serializers.BooleanField()
     middle_star = serializers.IntegerField()
+    price = serializers.DecimalField(max_digits=6, decimal_places=2)
 
     class Meta:
         model = RubiksCube

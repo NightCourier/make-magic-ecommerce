@@ -1,24 +1,28 @@
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend
 
 from django.db import models
 from src.api.models import RubiksCube
 from src.api.serializers.rating import CreateRatingSerializer
 from src.api.serializers.rubiks_cube import RubiksCubeListSerializer, RubiksCubeDetailSerializer
-from src.api.service import get_client_ip
+from src.api.service import get_client_ip, ProductFilter
 
 
-class RubiksCubeListView(APIView):
+class RubiksCubeListView(generics.ListAPIView):
     """Вывод списка Кубиков Рубика"""
+    serializer_class = RubiksCubeListSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ProductFilter
 
-    def get(self, request):
+    def get_queryset(self):
         cubes = RubiksCube.objects.all().annotate(
-            rating_user=models.Count("rating", filter=models.Q(rating__ip=get_client_ip(request)))
+            rating_user=models.Count("rating", filter=models.Q(rating__ip=get_client_ip(self.request)))
         ).annotate(
             middle_star=models.Sum(models.F('rating__star')) / models.Count(models.F('rating'))
         )
-        serializer = RubiksCubeListSerializer(cubes, many=True)
-        return Response(serializer.data)
+        return cubes
 
 
 class RubiksCubeDetailView(APIView):

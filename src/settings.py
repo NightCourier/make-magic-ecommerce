@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third-party apps
     "rest_framework",
+    "django_filters",
     # Custom apps
     "src.api",
 ]
@@ -140,3 +141,10 @@ STATICFILES_DIRS = (
 ADMIN_USERNAME = env.str("ADMIN_USERNAME", default=None)
 ADMIN_EMAIL = env.str("ADMIN_EMAIL", default=None)
 ADMIN_PASSWORD = env.str("ADMIN_PASSWORD", default=None)
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    )
+}
