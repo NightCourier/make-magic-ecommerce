@@ -8,5 +8,6 @@ admin.site.register(CartProduct)
 admin.site.register(Customer)
 admin.site.register(RatingStar)
 admin.site.register(Rating)
+admin.site.register(Review)
 
 

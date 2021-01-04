@@ -44,7 +44,7 @@ class Category(models.Model):
 
 
 class RatingStar(models.Model):
-    value = models.SmallIntegerField("Value", default=0)
+    value = models.SmallIntegerField("Значение", default=0)
 
     def __str__(self):
         return f'{self.value}'
@@ -70,6 +70,25 @@ class Rating(models.Model):
         verbose_name_plural = "Рейтинг"
 
 
+class Review(models.Model):
+    email = models.EmailField()
+    name = models.CharField("Имя", max_length=100)
+    text = models.TextField("Текст отзыва", max_length=1000)
+    parent = models.ForeignKey(
+        'self', verbose_name="Parent", on_delete=models.SET_NULL, blank=True, null=True, related_name="children"
+    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, verbose_name="Категория")
+    object_id = models.PositiveIntegerField(verbose_name="Номер продукта")
+    content_object = GenericForeignKey('content_type', 'object_id', )  # add ForeignKey to multiple models
+
+    def __str__(self):
+        return f"{self.email} - {self.content_object}"
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
+
+
 class Product(models.Model):
     category = models.ForeignKey("Category", on_delete=models.CASCADE, verbose_name='Категория')
     title = models.CharField(max_length=100, default='Кубик Рубика', verbose_name='Название')
@@ -79,6 +98,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Цена')
     manufacturer = models.CharField(max_length=100, verbose_name='Производитель')
     rating = GenericRelation(Rating)
+    review = GenericRelation(Review)
 
     class Meta:
         abstract = True

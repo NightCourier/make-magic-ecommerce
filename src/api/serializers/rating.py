@@ -10,13 +10,11 @@ class CreateRatingSerializer(serializers.ModelSerializer):
         model = Rating
         fields = ("star", "content_type", "object_id", "content_object")
 
-    def create(self, validated_data):  # validated_data - это данные, которые передаем в сериализатор  от клиентской
-        # стороны
+    def create(self, validated_data):
         rating = Rating.objects.update_or_create(
             ip=validated_data.get("ip", None),
             content_type=validated_data.get("content_type", None),
             object_id=validated_data.get("object_id", None),
-            defaults={'star': validated_data.get("star")}  # обновляем поле star, и если такой ip и product уже
-            # существует в БД, то только обнвоялем звезду
+            defaults={'star': validated_data.get("star")}
         )
-        return rating  # возвращаем полученную запись
+        return rating

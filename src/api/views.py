@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db import models
 from src.api.models import RubiksCube
 from src.api.serializers.rating import CreateRatingSerializer
+from src.api.serializers.review import CreateReviewSerializer
 from src.api.serializers.rubiks_cube import RubiksCubeListSerializer, RubiksCubeDetailSerializer
 from src.api.service import get_client_ip, ProductFilter
 
@@ -34,14 +35,19 @@ class RubiksCubeDetailView(APIView):
         return Response(serializer.data)
 
 
+class CreateReviewView(generics.CreateAPIView):
+    """Adding rating for product"""
+
+    serializer_class = CreateReviewSerializer
+
+
 class AddStarRatingView(APIView):
-    """Adding rating for film"""
+    """Adding rating for product"""
 
     def post(self, request):
-        serializer = CreateRatingSerializer(data=request.data)  # из JSON в QuerySet и в базу данных вот эту
-        # data=request.data
-        if serializer.is_valid():  # если валидно отработал
-            serializer.save(ip=get_client_ip(request))  # предаем ip, полученный с помощью get_client_ip
+        serializer = CreateRatingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(ip=get_client_ip(request))
             return Response(status=201)
         else:
             return Response(status=400)
