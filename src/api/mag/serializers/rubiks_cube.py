@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from src.api.models import RubiksCube
-from src.api.serializers.review import ReviewSerializer
+from src.api.mag.serializers.review import ReviewSerializer
 
 """Сериалайзеры нужны для того, чтобы преобразовывать типы данных Python в JSON и наоборот.
 К примеру: забирая фильмы из базы данных мы получаем QuerySet, далее мы представляем это в виде JSON и 

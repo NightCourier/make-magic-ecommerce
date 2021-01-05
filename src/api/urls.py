@@ -1,10 +1,9 @@
-from django.urls import path
+from django.urls import include, path
 
-from src.api import views
+from src.api.views import HealthView, Authentication
 
 urlpatterns = [
-    path("rubiks_cubes/", views.RubiksCubeListView.as_view()),
-    path("rubiks_cubes/<int:pk>/", views.RubiksCubeDetailView.as_view()),
-    path("rating/", views.AddStarRatingView.as_view()),
-    path("review/", views.CreateReviewView.as_view())
+    path('login/', Authentication.as_view(), name='login'),
+    path('health/', HealthView.as_view(), name='health'),
+    path('', include('src.api.mag.urls')),
 ]
