@@ -1,53 +1,51 @@
-from rest_framework import generics
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django_filters.rest_framework import DjangoFilterBackend
-
-from django.db import models
-from src.api.models import RubiksCube
-from src.api.serializers.rating import CreateRatingSerializer
-from src.api.serializers.review import CreateReviewSerializer
-from src.api.serializers.rubiks_cube import RubiksCubeListSerializer, RubiksCubeDetailSerializer
-from src.api.service import get_client_ip, ProductFilter
 
 
-class RubiksCubeListView(generics.ListAPIView):
-    """Вывод списка Кубиков Рубика"""
-    serializer_class = RubiksCubeListSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = ProductFilter
-
-    def get_queryset(self):
-        cubes = RubiksCube.objects.all().annotate(
-            rating_user=models.Count("rating", filter=models.Q(rating__ip=get_client_ip(self.request)))
-        ).annotate(
-            middle_star=models.Sum(models.F('rating__star')) / models.Count(models.F('rating'))
-        )
-        return cubes
+# from django.contrib.auth import authenticate
+# from django.contrib.auth.models import User
 
 
-class RubiksCubeDetailView(APIView):
-    """Вывод отдельного Кубика Рубика"""
+class HealthView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    def get(self, request, pk):
-        cubes = RubiksCube.objects.get(id=pk)
-        serializer = RubiksCubeDetailSerializer(cubes)
-        return Response(serializer.data)
+    def get(self, request):
+        return Response({"message": "It works!"}, status=status.HTTP_200_OK)
 
 
-class CreateReviewView(generics.CreateAPIView):
-    """Adding rating for product"""
+class Authentication(ObtainAuthToken):
 
-    serializer_class = CreateReviewSerializer
+    def post(self, request, *args, **kwargs):
 
+        # username = request.data.get('username')
+        # password = request.data.get('password')
+        #
+        # if not User.objects.filter(username=username).exists():
+        #     return Response(
+        #         {'error': 'The user doesn\'t exist'},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+        #
+        # user = authenticate(username=username, password=password)
+        # if not user:
+        #     return Response(
+        #         {'error': 'The password is incorrect'},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
 
-class AddStarRatingView(APIView):
-    """Adding rating for product"""
+        serializer = self.serializer_class(data=request.data, context={"request": request})
 
-    def post(self, request):
-        serializer = CreateRatingSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(ip=get_client_ip(request))
-            return Response(status=201)
-        else:
-            return Response(status=400)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            return Response({"error": "The authentication is failed"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = serializer.validated_data["user"]
+        token, created = Token.objects.get_or_create(user=user)
+
+        return Response({"token": token.key}, status=status.HTTP_200_OK)
