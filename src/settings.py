@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # Third-party apps
     "rest_framework",
     "django_filters",
+    'corsheaders',
     'drf_yasg',
     # Custom apps
     "src.api",
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -138,11 +140,15 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static dev"),
 )
 
+CORS_ORIGIN_WHITELIST = ["http://localhost:8080", "http://127.0.0.1:8000"]
+
+# DEFAULT_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8000"]
+# CORS_ALLOWED_ORIGINS = env.list("ALLOWED_ORIGINS", default=DEFAULT_ALLOWED_ORIGINS)
+
 # for `python manage.py createsuperuser`
 ADMIN_USERNAME = env.str("ADMIN_USERNAME", default=None)
 ADMIN_EMAIL = env.str("ADMIN_EMAIL", default=None)
 ADMIN_PASSWORD = env.str("ADMIN_PASSWORD", default=None)
-
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
