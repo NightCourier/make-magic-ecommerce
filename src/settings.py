@@ -54,9 +54,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -140,24 +140,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static dev"),
 )
 
-# CORS_ORIGIN_WHITELIST = ["http://localhost:8080", "http://127.0.0.1:8000"]
+DEFAULT_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8000"]
+CORS_ALLOWED_ORIGINS = env.list("ALLOWED_ORIGINS", default=DEFAULT_ALLOWED_ORIGINS)
 
-# CORS_ORIGIN_ALLOW_ALL = True  # If this is used then `CORS_ORIGIN_WHITELIST` will not have any effect
-# CORS_ALLOW_CREDENTIALS = True
-
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8080',
-]
-
-# If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
-    # CORS_ORIGIN_REGEX_WHITELIST = [
-    #     'http://localhost:3030',
-    # ]
-
-    # DEFAULT_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8000"]
-    # CORS_ALLOWED_ORIGINS = env.list("ALLOWED_ORIGINS", default=DEFAULT_ALLOWED_ORIGINS)
-
-    # for `python manage.py createsuperuser`
+# for `python manage.py createsuperuser`
 ADMIN_USERNAME = env.str("ADMIN_USERNAME", default=None)
 ADMIN_EMAIL = env.str("ADMIN_EMAIL", default=None)
 ADMIN_PASSWORD = env.str("ADMIN_PASSWORD", default=None)
