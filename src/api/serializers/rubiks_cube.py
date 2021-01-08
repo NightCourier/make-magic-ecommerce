@@ -18,7 +18,7 @@ class RubiksCubeListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RubiksCube
-        fields = ("id", "title", "price", "category", "rating_user", "middle_star")
+        fields = ("id", "title", "price", "category", "rating_user", "middle_star", "image")
 
 
 class RubiksCubeDetailSerializer(serializers.ModelSerializer):

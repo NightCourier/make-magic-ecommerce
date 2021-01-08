@@ -11,8 +11,23 @@ from src.api.serializers.rubiks_cube import RubiksCubeListSerializer, RubiksCube
 from src.api.service import get_client_ip, ProductFilter
 
 
+# class ProductDetailView(generics.RetrieveAPIView):
+#
+#     CT_MODEL_MODEL_CLASS = {
+#         'rubiks_cube': [RubiksCube, RubiksCubeDetailSerializer]
+#     }
+#
+#     def dispatch(self, request, *args, **kwargs):
+#         self.model = self.CT_MODEL_MODEL_CLASS[kwargs['ct_model']][0]
+#         self.queryset = self.model._base_manager.all()
+#         self.serializer_class = self.CT_MODEL_MODEL_CLASS[kwargs['ct_model']][1]
+#
+#     context_object_name = 'product'
+#     slug_url_kwarg = 'url'
+
+
 class RubiksCubeListView(generics.ListAPIView):
-    """Вывод списка Кубиков Рубика"""
+    """List of Rubiks Cubes"""
     serializer_class = RubiksCubeListSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ProductFilter
@@ -26,13 +41,11 @@ class RubiksCubeListView(generics.ListAPIView):
         return cubes
 
 
-class RubiksCubeDetailView(APIView):
-    """Вывод отдельного Кубика Рубика"""
+class RubiksCubeDetailView(generics.RetrieveAPIView):
+    """Detail for single Rubiks Cube"""
 
-    def get(self, request, pk):
-        cubes = RubiksCube.objects.get(id=pk)
-        serializer = RubiksCubeDetailSerializer(cubes)
-        return Response(serializer.data)
+    queryset = RubiksCube.objects.all()
+    serializer_class = RubiksCubeDetailSerializer
 
 
 class CreateReviewView(generics.CreateAPIView):
